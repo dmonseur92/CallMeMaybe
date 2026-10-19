@@ -21,18 +21,19 @@ def lets_go():
     prompts = read_prompt()
     definitions = read_def()
     definitions_text = json.dumps(definitions)
-    print(definitions_text)
+    # print(definitions_text)
     for p in prompts:
-        tokens = model.encode(p)
+        text = definitions_text + "\nUser request: Give me the function name you are using to answer " + p
+        tokens = model.encode(text)
 
         input_ids = tokens[0].tolist()
         i = 0
-        while i < 10 :
+        while i < 50 :
             logits = model.get_logits_from_input_ids(input_ids)
             input_ids.append(logits.index(max(logits)))
             i += 1
 
-        print(input_ids)
+        # print(input_ids)
         print(model.decode(input_ids))
         print()
 
