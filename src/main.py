@@ -1,5 +1,4 @@
 import json
-from typing import Any
 from llm_sdk import Small_LLM_Model
 
 def read_prompt() -> list[str]:
@@ -11,24 +10,20 @@ def read_prompt() -> list[str]:
            prompts.append(d["prompt"])
     return prompts
 
-def read_def() -> dict[Any]:
+def read_def() -> list[dict]:
     file = "data/input/functions_definition.json"
-    definitions = []
     with open(file) as f:
         data = json.load(f)
-        for d in data:
-            #print(d["name"])
-            definitions.append(d["description"])
-            #print(d["parameters"])
-    return definitions
+    return data
 
 def lets_go():
     model = Small_LLM_Model()
     prompts = read_prompt()
+    definitions = read_def()
+    definitions_text = json.dumps(definitions)
+    print(definitions_text)
     for p in prompts:
         tokens = model.encode(p)
-        print(tokens)
-        print(model.decode(tokens))
 
         input_ids = tokens[0].tolist()
         i = 0
@@ -38,8 +33,8 @@ def lets_go():
             i += 1
 
         print(input_ids)
-        print()
         print(model.decode(input_ids))
+        print()
 
 if __name__ == "__main__":
     lets_go()
