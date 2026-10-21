@@ -23,10 +23,13 @@ def lets_go():
     definitions_text = json.dumps(definitions)
     # print(definitions_text)
     for p in prompts:
-        text = definitions_text + "\nUser request: Give me the function name you are using to answer " + p
+        instruction = "\nUser request: Give me the function and the parameters "
+        instruction += "in a JSON format to answer "
+        text = definitions_text + instruction + p
         tokens = model.encode(text)
 
         input_ids = tokens[0].tolist()
+        start = len(input_ids)
         i = 0
         while i < 50 :
             logits = model.get_logits_from_input_ids(input_ids)
@@ -34,7 +37,7 @@ def lets_go():
             i += 1
 
         # print(input_ids)
-        print(model.decode(input_ids))
+        print(model.decode(input_ids[start:]))
         print()
 
 if __name__ == "__main__":
